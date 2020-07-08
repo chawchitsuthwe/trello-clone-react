@@ -1,0 +1,14 @@
+.second-nav{
+	padding-right: 10px;
+	padding-left: 10px;
+}
+
+.boardname{
+	font-weight: bolder;
+	font-size: 18px;
+	color: white;
+}
+
+.team{
+	font-size: 15px;
+}

@@ -1,24 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect } from 'react';
 import './App.css';
+import NavTop from './components/NavTop';
+import NavBottom from './components/NavBottom';
+import Wrapper from './components/Wrapper'
 
 function App() {
+  const  limitWrapperHeight = () => {
+    const body = document.documentElement.clientHeight;
+    const nav1 = document.getElementById("first-nav").clientHeight;
+    const nav2 = document.getElementById("second-nav").clientHeight;
+    const wrapper = document.getElementById("wrapper");
+    wrapper.style.maxHeight = (body - nav1 - nav2 - 5) + "px";
+    wrapper.style.minHeight = (body - nav1 - nav2 - 5) + "px";
+  };
+
+  useEffect(() => {
+    limitWrapperHeight();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <NavTop />
+      <NavBottom />
+      <Wrapper />
     </div>
   );
 }
