@@ -15,3 +15,33 @@
 .list .btn:hover{
 	background-color: rgb(0,0,0,0.1);
 }
+
+#list-action-popup{
+	position: absolute;
+  	top: 0;
+  	left: 0;
+  	z-index: 3;
+  	display: none;
+  	width: 280px;
+  	box-shadow: rgba(180, 180, 180, 0.7) 2px 2px 3px 1px;
+}
+
+.list-action-card:hover{
+	background-color: white;
+}
+
+.card{
+	padding: 8px;
+	margin-bottom: 5px;
+	box-shadow: 0 2px 2px -2px rgb(0,0,0,0.2);
+}
+
+.card:hover{
+	background-color: #F4F5F7;
+}
+
+.card p{
+	padding-top: 5px;
+	font-size: 14px;
+	margin-bottom: -3px;
+}

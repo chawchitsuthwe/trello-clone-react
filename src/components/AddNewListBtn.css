@@ -3,3 +3,24 @@
 	width: 18rem;
 	color: white;
 }
+
+#add-list-popup {
+  display: none;
+  z-index: 10;
+  background-color: #EBECF0;
+  position: absolute;
+}
+
+.trello-fadein {
+  animation: fadeIn 150ms ease-out forwards;
+}
+
+.btn-new-list{
+	flex: 0 0 auto;
+	width: 18rem;
+	color: white;
+}
+
+.btn-success{
+	background-color: #61BD4F;
+}

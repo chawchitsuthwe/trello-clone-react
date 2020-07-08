@@ -5,6 +5,7 @@ import NavBottom from './components/NavBottom';
 import Wrapper from './components/Wrapper'
 
 function App() {
+
   const  limitWrapperHeight = () => {
     const body = document.documentElement.clientHeight;
     const nav1 = document.getElementById("first-nav").clientHeight;
