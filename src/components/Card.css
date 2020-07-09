@@ -1,0 +1,15 @@
+.card{
+	padding: 8px;
+	margin-bottom: 5px;
+	box-shadow: 0 2px 2px -2px rgb(0,0,0,0.2);
+}
+
+.card:hover{
+	background-color: #F4F5F7;
+}
+
+.card p{
+	padding-top: 5px;
+	font-size: 14px;
+	margin-bottom: -3px;
+}
