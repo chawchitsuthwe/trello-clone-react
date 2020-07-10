@@ -1,7 +1,7 @@
 import React from 'react';
 import './Account.css'
 
-const Account = ({name}) => {
+const Account = ({account}) => {
 	
 	const getInitials = (name) => {
 		var initials;
@@ -19,7 +19,7 @@ const Account = ({name}) => {
 
 	return (
 		<div>
-			<div className="card-member mr-1">{ getInitials(name) }</div>
+			<div className="card-member mr-1">{ getInitials(account.name) }</div>
 		</div>
 	)
 }

@@ -1,16 +1,17 @@
 import React from 'react';
 import './Card.css';
 import Label from './Label';
-import Account from './Account'
+import Account from './Account';
 
-const Card = ({title,labels,accounts}) => {
+const Card = ({id,title,listTitle,labels,accounts, cardClicked}) => {
+
 	return (
 		<div>
-			<div className="card" data-toggle="modal" data-target="#card-modal">
+			<div className="card" id="card" data-toggle="modal" data-target="#card-modal" onClick={ () => cardClicked(listTitle,id) }>
     			<div className="d-flex justify-content-start">
     			{labels && labels.map(label => (
 	      
-	        		label.status === 1 && <Label key={label.id} color={label.color} />
+	        		label.status === 1 && <Label key={label.id} label={label} condition="noName" />
 	    	
 	    		))}
     			</div>
@@ -18,7 +19,7 @@ const Card = ({title,labels,accounts}) => {
       			<div className="d-flex justify-content-end">
       			{accounts && accounts.map(account => (
 	      
-	        		<Account key={account.username} name={account.name} />
+	        		<Account key={account.username} account={account} />
 	    	
 	    		))}
 				</div>

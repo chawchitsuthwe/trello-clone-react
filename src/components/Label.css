@@ -4,3 +4,10 @@
 	border-radius: 5px;
 	float: right;
 }
+
+.card-label-name{
+	padding: 5px;
+	border-radius: 5px;
+	float: right;
+	color: white;
+}

@@ -5,12 +5,15 @@ import Axios from "axios";
 import List from './List';
 import AddNewListBtn from './AddNewListBtn';
 import ListAction from './ListAction';
+import CardModal from './CardModal';
 
 const Wrapper = () => {
 	const url = "http://localhost:8181/";
 
 	const [lists, setLists] = useState([]);
-	const [listId, setListId] = useState("");
+	const [card, setCard] = useState({});
+	const [listId, setListId] = useState(1);
+	const [listTitle, setListTItle] = useState("");
 
 	const listActionPopup = document.getElementById("list-action-popup");
 
@@ -51,13 +54,27 @@ const Wrapper = () => {
 		}
 	}
 
+	const cardClicked = (listTitle,cardId) => {
+		try {
+	  		Axios.get(url + "card/" + cardId)
+	  		.then( res => {
+	  			setCard(res.data);
+	  			setListTItle(listTitle);
+	  		})
+		} 
+		catch (error) {
+	  		setCard({});
+	  		setListTItle("");
+		}
+	}
+
 	return (
 		<div>
 			<div id="wrapper" className="p-2">
 
 			{lists && lists.map(list => (
 	      
-	        	list.status === 1 && <List key={list.id} url={url} title={list.title} listId={list.id} cards={list.cards} displayListActionPopup={displayListActionPopup} />
+	        	list.status === 1 && <List key={list.id} url={url} title={list.title} listId={list.id} cards={list.cards} displayListActionPopup={displayListActionPopup} cardClicked={cardClicked} />
 	    	
 	    	))}
 
@@ -65,6 +82,7 @@ const Wrapper = () => {
 
 			</div>
 			<ListAction url={url} listId={listId} toggelListActionPopup={toggelListActionPopup}/>
+			<CardModal card={card} listTitle={listTitle} />
 		</div>
 
 	);

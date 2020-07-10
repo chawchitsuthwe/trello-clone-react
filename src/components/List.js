@@ -2,19 +2,19 @@ import React from 'react';
 import './List.css';
 import Card from './Card'
 
-const List = ({url, listId, title, cards, displayListActionPopup}) => {
+const List = ({url, listId, title, cards, displayListActionPopup, cardClicked}) => {
 
 	return (
 		<div>
 			<div className="list">
 				<div className="d-flex justify-content-between align-items-center mb-1">
 	  				<h6 className="pl-2">{title}</h6>
-	  				<button id="list-action-btn" className="btn btn-sm" onClick={ (e)=> displayListActionPopup(e, listId) }><i className="fa fa-ellipsis-h"></i></button>
+	  				<button id="list-action-btn" className="btn btn-sm" onClick={ (e)=> displayListActionPopup(e, listId, title) }><i className="fa fa-ellipsis-h"></i></button>
 				</div>
 
 				{cards && cards.map(card => (
 	      
-	        	card.status === 1 && <Card key={card.id} title={card.title} labels={card.labels} accounts={card.accounts} />
+	        	card.status === 1 && <Card key={card.id} id={card.id} title={card.title} listTitle={title} labels={card.labels} accounts={card.accounts} cardClicked={cardClicked} />
 	    	
 	    		))}
 	    		<div className="d-flex justify-content-between align-items-center">

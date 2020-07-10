@@ -1,10 +1,15 @@
 import React from 'react';
 import './Label.css';
 
-const Label = ({color}) => {
+const Label = ({label, condition}) => {
 	return (
 		<div>
-			<div className="card-label" style= {{backgroundColor: color}}></div>
+		{ condition && condition ==="noName" &&
+			<div className="card-label" style= {{backgroundColor: label.color}}></div>
+		}
+		{ condition && condition ==="withName" &&
+			<div className="card-label-name" style= {{backgroundColor: label.color}}>{label.name}</div>
+		}
 		</div>
 	)
 }
