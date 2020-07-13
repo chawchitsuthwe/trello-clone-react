@@ -1,62 +1,19 @@
 import React, { useState } from 'react';
 import './ListAction.css';
-import Axios from "axios";
 
-const ListAction = ({url, listId, toggelListActionPopup}) => {
+const ListAction = ({listActionClose, listActionClicked, editListTitle, archiveList, deleteList}) => {
 
-	const [list, setList] = useState({})
 	const [listTitle, setListTitle] = useState("");
 
-	const deleteList = () => {
-		try {
-	  		Axios.delete(url + "list/"+listId)
-			.then(res => {
-				window.location.reload(true);
-			})
-		} 
-		catch (error) {
-	  		console.log(error);
-		}
-		
-	}
-
-	const archiveList = () => {
-		try {
-	  		Axios.put(url + "list/" + listId + "/2")
-			.then(res => {
-			  	window.location.reload(true);
-			})
-		} 
-		catch (error) {
-	  		setList({});
-		}
-	}
-
-	const showListDataInEdit = () => {
-		//console.log(listId)
-		try {
-	  		Axios.get(url + "list/" + listId)
-	  		.then( res => {
-	  			setList(res.data);
-	  			toggelListActionPopup(false);
-	  		})
-		} 
-		catch (error) {
-	  		setList({});
-		}
-	}
-
-	const editListTitle = (e) =>{
+	const editTitleSubmit = (e) => {		
 		e.preventDefault();
-		Axios.put( url + "list/"+listId, {
-			title: listTitle,
-			position: list.position,
-			status: 1
-		})
-		.then(res => {
-			//console.log(res)
-		  	window.location.reload(true);
-		})
+		editListTitle(listTitle);
+		document.getElementById("edit-list-modal").style.display="none";
+		setListTitle("");
+	}
+
+	const closeOnClick = () => {
+		document.getElementById("edit-list-modal").style.display="none";
 	}
 
 	return (
@@ -66,29 +23,27 @@ const ListAction = ({url, listId, toggelListActionPopup}) => {
 			  		<li className="list-group-item text-secondary">
 			            <div className="d-flex justify-content-between align-items-center">
 			              <p style= {{ fontSize: "18px" }} >List Actions</p>
-			              <button className="btn btn-sm my-1 mx-2 p-0 text-danger" onClick = { () => toggelListActionPopup(false) } style = {{ fontSize:'medium' }}><i className="fas fa-times"></i></button>
+			              <button className="btn btn-sm my-1 mx-2 p-0 text-danger" onClick = { () => listActionClose(true) } style = {{ fontSize:'medium' }}><i className="fas fa-times"></i></button>
 			            </div>
 			  		</li>
-					<a onClick={ showListDataInEdit } href="#edit-list-modal" data-toggle="modal" className="list-group-item list-group-item-action" id="edit-list-btn">Edit</a>
+					<button onClick={ listActionClicked } className="list-group-item list-group-item-action" id="edit-list-btn">Edit</button>
 					<button onClick={ archiveList } className="list-group-item list-group-item-action">Archive This List</button>
 					<button onClick={ deleteList } className="list-group-item list-group-item-action">Delete This List</button>
 				</ul>
 			</div>
 
-			<div className="modal fade" id="edit-list-modal" tabIndex="-1" role="dialog" aria-labelledby="ediListModal" aria-hidden="true">
-		  		<div className="modal-dialog">
-		    		<div className="modal-content">
-		      			<div className="modal-body">
-		      				<form id="list-edit-form">
-		  						<div className="form-group">
-		    						<input type="text" className="form-control" placeholder="Enter list title" value={listTitle} onChange= { e => setListTitle(e.target.value) } />
-		  						</div>
-		  						<button type="submit" className="btn btn-green" onClick={ editListTitle }>Edit</button>
-		  					</form>
-		      			</div>
-		      		</div>
-		      	</div>
-	      	</div>
+			<div className="customModal" id="edit-list-modal">
+				<div className="custom-modal-content">
+					<form id="list-edit-form" onSubmit={ editTitleSubmit }>
+  						<div className="form-group">
+    						<input type="text" className="form-control" placeholder="Enter list title" value={listTitle} onChange= { e => setListTitle(e.target.value) } id="editText" />
+  						</div>
+  						<button type="submit" className="btn btn-green">Edit</button>
+  						 <span className="close" onClick={closeOnClick} >&times;</span>
+  					</form>
+				</div>
+			</div>
+
 		</div>
 	)
 }

@@ -1,37 +1,36 @@
 import React from 'react';
 import './List.css';
-import Card from './Card'
+import Card from './Card';
 
-const List = ({url, listId, title, cards, displayListActionPopup, cardClicked}) => {
+const List = ({list, listActionDisplay, cardClicked, addNewCardDisplay}) => {
 
 	return (
 		<div>
 			<div className="list">
 				<div className="d-flex justify-content-between align-items-center mb-1">
-	  				<h6 className="pl-2">{title}</h6>
-	  				<button id="list-action-btn" className="btn btn-sm" onClick={ (e)=> displayListActionPopup(e, listId, title) }><i className="fa fa-ellipsis-h"></i></button>
+	  				<h6 className="pl-2">{list.title}</h6>
+	  				<button id="list-action-btn" 
+	  					className="btn btn-sm" 
+	  					onClick={ (e)=> listActionDisplay(e, list.id) }>
+	  					<i className="fa fa-ellipsis-h"></i>
+	  				</button>
 				</div>
 
-				{cards && cards.map(card => (
+				{list.cards && list.cards.map(card => (
 	      
-	        	card.status === 1 && <Card key={card.id} id={card.id} title={card.title} listTitle={title} labels={card.labels} accounts={card.accounts} cardClicked={cardClicked} />
+	        	card.status === 1 && 
+	        	<Card key={card.id} 
+	        		card={card} 
+	        		listTitle={list.title} 
+	        		cardClicked={cardClicked} />
 	    	
 	    		))}
-	    		<div className="d-flex justify-content-between align-items-center">
-	  				<button className="btn btn-sm btn-new-card text-left w-100" id="add-new-card">
+	    		<div className="d-flex justify-content-between align-items-center mt-2">
+	  				<button className="btn btn-sm btn-new-card text-left w-100" id="add-card-btn" onClick={(e) => addNewCardDisplay(e, list.id)}>
 	    				<i className="fa fa-plus"></i>&nbsp;&nbsp;Add another card
 	  				</button>
 	  				<button className="btn btn-sm"><i className="fa fa-window-restore"></i></button>
 				</div>
-
-					{/* ${getCard(list[i].cards)} 
-
-				<div className="d-flex justify-content-between align-items-center">
-	  				<button className="btn btn-sm btn-new-card text-left" id="add-new-card">
-	    				<i className="fa fa-plus"></i>&nbsp;&nbsp;Add another card
-	  				</button>
-	  				<button className="btn btn-sm"><i className="fa fa-window-restore"></i></button>
-				</div>*/}
 			</div>
 	    </div>
 	)

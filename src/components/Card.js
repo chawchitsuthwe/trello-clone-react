@@ -3,21 +3,21 @@ import './Card.css';
 import Label from './Label';
 import Account from './Account';
 
-const Card = ({id,title,listTitle,labels,accounts, cardClicked}) => {
+const Card = ({card, listTitle, cardClicked}) => {
 
 	return (
 		<div>
-			<div className="card" id="card" data-toggle="modal" data-target="#card-modal" onClick={ () => cardClicked(listTitle,id) }>
+			<div className="card" id="card" data-toggle="modal" data-target="#card-modal" onClick={ () => cardClicked(listTitle,card.id) }>
     			<div className="d-flex justify-content-start">
-    			{labels && labels.map(label => (
+    			{card.labels && card.labels.map(label => (
 	      
 	        		label.status === 1 && <Label key={label.id} label={label} condition="noName" />
 	    	
 	    		))}
     			</div>
-      			<p>{title}</p>
+      			<p>{card.title}</p>
       			<div className="d-flex justify-content-end">
-      			{accounts && accounts.map(account => (
+      			{card.accounts && card.accounts.map(account => (
 	      
 	        		<Account key={account.username} account={account} />
 	    	
