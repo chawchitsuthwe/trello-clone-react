@@ -41,6 +41,7 @@ const Wrapper = () => {
 	  			setCard(res.data);
 	  			setListTItle(listTitle);
 	  		})
+	  		document.getElementById("card-modal").style.display="block";
 		} 
 		catch (error) {
 	  		setCard({});
@@ -156,17 +157,21 @@ const Wrapper = () => {
 		}
 	}
 
-	const saveNewCard = (cardTitle) => {
+	const saveNewCard = async(cardTitle) => {
 
 		try {
-	  		Axios.get(url + "list/" + listId)
-	  		.then( res => {
-	  			setList1(res.data);
-	  		})
+	  		// Axios.get(url + "list/" + listId)
+	  		// .then( res => {
+	  		// 	//setList1(res.data);
+	  		// 	resList= res.data;
+	  		// 	console.log(resList)
+	  		// })
+
+	  		const res = await Axios.get(url + "list/" + listId);
 
 	  		Axios.post( url + "card", {
 			 	"title": cardTitle,
-	     		"position": list1.cards.length + 1,
+	     		"position": res.data.cards.length + 1,
 	     		"status": 1,
 	     		"list": {
 	         		"id": listId
@@ -177,8 +182,13 @@ const Wrapper = () => {
 			})
 		} 
 		catch (error) {
-	  		setList1({});
+	  		console.log(error);
 		}
+	}
+
+	const archiveCard = () => {
+		Axios.put(url + "card/" + card.id + "/2");
+		setLists(lists);
 	}
 
 	return (
@@ -207,7 +217,7 @@ const Wrapper = () => {
 				archiveList={archiveList} 
 				deleteList={deleteList} />
 
-			<CardModal card={card} listTitle={listTitle} />
+			<CardModal card={card} listTitle={listTitle} archiveCard={archiveCard} />
 			<AddNewCard addNewCardClose={addNewCardClose} saveNewCard={saveNewCard} />
 		</div>
 

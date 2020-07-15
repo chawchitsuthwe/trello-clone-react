@@ -7,7 +7,7 @@ const Card = ({card, listTitle, cardClicked}) => {
 
 	return (
 		<div>
-			<div className="card" id="card" data-toggle="modal" data-target="#card-modal" onClick={ () => cardClicked(listTitle,card.id) }>
+			<div className="card" id="card" onClick={ () => cardClicked(listTitle,card.id) }>
     			<div className="d-flex justify-content-start">
     			{card.labels && card.labels.map(label => (
 	      
