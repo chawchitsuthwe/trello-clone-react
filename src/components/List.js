@@ -8,7 +8,7 @@ const List = ({list, listActionDisplay, cardClicked, addNewCardDisplay}) => {
 		<div>
 			<div className="list">
 				<div className="d-flex justify-content-between align-items-center mb-1">
-	  				<h6 className="pl-2">{list.title}</h6>
+	  				<h6 className="pl-2 font-weight-bold">{list.title}</h6>
 	  				<button id="list-action-btn" 
 	  					className="btn btn-sm" 
 	  					onClick={ (e)=> listActionDisplay(e, list.id) }>

@@ -115,9 +115,9 @@ const Wrapper = () => {
 
 	}
 
-	const listActionClose = (isOpen) => {
+	const listActionClose = (close) => {
 		if(listActionPopup) {
-			listActionPopup.style.display = isOpen ? "none":"block";
+			listActionPopup.style.display = close ? "none":"block";
 		}
 	}
 
@@ -151,21 +151,15 @@ const Wrapper = () => {
 		addNewCardClose(false);
 	}
 
-	const addNewCardClose = (isOpen) => {
+	const addNewCardClose = (close) => {
 		if(addCardPopup) {
-			addCardPopup.style.display = isOpen ? "none":"block";
+			addCardPopup.style.display = close ? "none":"block";
 		}
 	}
 
 	const saveNewCard = async(cardTitle) => {
 
 		try {
-	  		// Axios.get(url + "list/" + listId)
-	  		// .then( res => {
-	  		// 	//setList1(res.data);
-	  		// 	resList= res.data;
-	  		// 	console.log(resList)
-	  		// })
 
 	  		const res = await Axios.get(url + "list/" + listId);
 
@@ -189,6 +183,22 @@ const Wrapper = () => {
 	const archiveCard = () => {
 		Axios.put(url + "card/" + card.id + "/2");
 		setLists(lists);
+	}
+
+	const editCardDesc = (desc) => {
+		try{
+			Axios.put( url + "card/" + card.id, {
+			   	"title": card.title,
+				"description": desc,
+				"due_date": card.due_date,
+				"position": card.position,
+				"status": card.status,
+				"list": card.list
+			})
+		}
+		catch(error){
+			console.log(error);
+		}
 	}
 
 	return (
@@ -217,8 +227,9 @@ const Wrapper = () => {
 				archiveList={archiveList} 
 				deleteList={deleteList} />
 
-			<CardModal card={card} listTitle={listTitle} archiveCard={archiveCard} />
+			<CardModal card={card} listTitle={listTitle} archiveCard={archiveCard} editCardDesc={editCardDesc} />
 			<AddNewCard addNewCardClose={addNewCardClose} saveNewCard={saveNewCard} />
+
 		</div>
 
 	);

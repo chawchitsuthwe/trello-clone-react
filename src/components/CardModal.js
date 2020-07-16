@@ -1,10 +1,18 @@
-import React from 'react';
+import React,{useState, useEffect} from 'react';
 import './CardModal.css';
 import Account from './Account';
 import Label from './Label';
-import Checklist from './Checklist'
+import Checklist from './Checklist';
 
-const CardModal = ({listTitle,card,archiveCard}) => {
+const CardModal = ({listTitle,card,archiveCard,editCardDesc}) => {
+
+	const cardDescBox = document.getElementById("card-desc-popup");
+	const cardDescDiv = document.getElementById("card-desc");
+	const [cardDesc, setCardDesc] = useState("");
+
+	useEffect(() => {
+		setCardDesc(card.description);
+	}, [card.description])
 
 	const archiveOnClick = () => {
 		archiveCard();
@@ -13,6 +21,52 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 
 	const closeOnClick = () => {
 		document.getElementById("card-modal").style.display="none";
+	}
+
+	const cardDescBoxDisplay = (e) => {
+
+		if(card.description){
+			setCardDesc(card.description);
+		}
+		else
+		{
+			setCardDesc("");
+		}
+
+	    let btn = e.target;
+		if(btn.nodeName === "i" || btn.nodeName === "I") {
+		btn = btn.parentNode;
+		}
+		const loc = btn.getBoundingClientRect();
+
+		cardDescBox.style.top = loc.top - 10 + "px";
+	    cardDescBox.style.left = loc.left - 10 + "px";
+	    cardDescBox.style.width = loc.width + 17 + "px";
+
+	    cardDescDiv.style.display = "none";
+		cardDescBoxClose(false);
+		
+	}
+
+	const cardDescBoxClose = (close) => {
+		if(cardDescBox) {
+			cardDescBox.style.display = close ? "none":"block";
+			cardDescDiv.style.display = close ? "block":"none";
+		}
+	}
+
+	const inputEntered = (e, status) => {
+	  	if(e.keyCode === 13 && status === "edit"){
+	    	editCardDesc(cardDesc);
+	    	cardDescBoxClose(true);
+	    	//document.getElementById("card-modal").style.display="none";
+	  	}
+	}
+
+	const editOnClick = (e) => {
+		editCardDesc(cardDesc);
+		cardDescBoxClose(true);
+		//document.getElementById("card-modal").style.display="none";
 	}
 
 	return (
@@ -66,7 +120,7 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 			      				</div>
 			      			</div>
 		      			
-			      			<div className="row">
+			      			<div className="row mb-1">
 			      				<div className="col-md-1">
 			      					<i className="fa fa-align-justify"></i>
 			      				</div>
@@ -77,12 +131,18 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 			      			<div className="row">
 			      				<div className="col-md-1"></div>
 		    					<div className="col-md-11">
-		     						<p id="card-desc">{card.description}</p>
+		    						<div id="card-desc" onClick={cardDescBoxDisplay}>
+		    						{
+		    							cardDesc ? 
+		    							<p> { cardDesc } </p> :
+		    							<div id="description">Add a more detailed description...</div>
+		    						}
+		    						</div>
 		    					</div>
 			     			</div>
 			     			{ card.checklists && !!card.checklists.length && 
 			     			<div>
-			     				<div className="row mt-3" id="checklist-head">
+			     				<div className="row mt-3 mb-1" id="checklist-head">
 			     					<div className="col-md-1">
 			    						<i className="fa fa-check-square"></i>
 			     					</div>
@@ -136,6 +196,17 @@ const CardModal = ({listTitle,card,archiveCard}) => {
       				</div>
 				</div>
 			</div>
+			<div className="rounded trello-fadein" id="card-desc-popup">
+		        <textarea id="desc-input" className="w-100" placeholder="Add a more detailed description..." rows="6"
+          		name="cardDesc"
+          		value={cardDesc}
+          		onChange={ e => setCardDesc(e.target.value) }
+          		onKeyUp={(e) => inputEntered(e,"edit")} />
+		        <div className="d-flex justify-content-between align-items-center pt-1">
+		          <button onClick={editOnClick} className="btn btn-success">Save</button>
+		          <button className="btn btn-sm my-1 mx-2 p-0 text-danger" onClick = { () => cardDescBoxClose(true) } style = {{ fontSize:'large' }}><i className="fas fa-times"></i></button>
+		        </div>
+		    </div>
 		</div>
 	)
 }
