@@ -12,6 +12,7 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 	const cardDescBox = document.getElementById("card-desc-popup");
 	const cardDescDiv = document.getElementById("card-desc");
 	const cardTitleBox = document.getElementById("card-title");
+	const checklistHead = document.getElementById("checklist-head");
 	const [cardTitle, setCardTitle] = useState("")
 	const [cardDesc, setCardDesc] = useState("");
 
@@ -30,16 +31,10 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 		document.getElementById("card-modal").style.display="none";
 	}
 
-	const cardDescBoxDisplay = (e) => {
-
-		if(card.description){
-			setCardDesc(card.description);
-		}
-		else
-		{
+	const cardDescBoxDisplay = (e, desc) => {
+		if(!desc){
 			setCardDesc("");
 		}
-
 	    let btn = e.target;
 		if(btn.nodeName === "i" || btn.nodeName === "I") {
 		btn = btn.parentNode;
@@ -51,6 +46,10 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 	    cardDescBox.style.width = loc.width + 17 + "px";
 
 	    cardDescDiv.style.display = "none";
+	    if(checklistHead){
+	    	checklistHead.style.marginTop = "240px";
+	    }
+
 		cardDescBoxClose(false);
 		
 	}
@@ -59,6 +58,9 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 		if(cardDescBox) {
 			cardDescBox.style.display = close ? "none":"block";
 			cardDescDiv.style.display = close ? "block":"none";
+			if(checklistHead){
+				checklistHead.style.marginTop = close ? "0px" : "240px";
+			}
 		}
 	}
 
@@ -185,7 +187,7 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 			      			<div className="row">
 			      				<div className="col-md-1"></div>
 		    					<div className="col-md-11">
-		    						<div id="card-desc" onClick={cardDescBoxDisplay}>
+		    						<div id="card-desc" onClick={(e) => cardDescBoxDisplay(e,cardDesc)}>
 		    						{
 		    							cardDesc ? 
 		    							<p> { cardDesc } </p> :
@@ -195,8 +197,8 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 		    					</div>
 			     			</div>
 			     			{ card.checklists && !!card.checklists.length && 
-			     			<div>
-			     				<div className="row mt-3 mb-1" id="checklist-head">
+			     			<div id="checklist-head">
+			     				<div className="row mb-1">
 			     					<div className="col-md-1">
 			    						<i className="fa fa-check-square"></i>
 			     					</div>

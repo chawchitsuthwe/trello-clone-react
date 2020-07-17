@@ -94,18 +94,19 @@ p{
 }
 
 #card-desc-popup {
-  display: none;
-  z-index: 10;
-  background-color: white;
-  position: absolute;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-top: 7px;
-  padding-bottom: 5px;
+	position: fixed;
+	display: none;
+	z-index: 10;
+	background-color: white;
+	position: absolute;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-top: 7px;
+	padding-bottom: 5px;
 }
 
 .trello-fadein {
-  animation: fadeIn 150ms ease-out forwards;
+  	animation: fadeIn 150ms ease-out forwards;
 }
 
 .btn-success{
