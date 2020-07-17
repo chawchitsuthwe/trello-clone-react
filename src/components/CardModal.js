@@ -1,18 +1,25 @@
 import React,{useState, useEffect} from 'react';
+import OutsideClickHandler from 'react-outside-click-handler';
 import './CardModal.css';
 import Account from './Account';
 import Label from './Label';
 import Checklist from './Checklist';
+import {url} from './../utils';
+import Axios from "axios";
 
-const CardModal = ({listTitle,card,archiveCard,editCardDesc}) => {
+const CardModal = ({listTitle,card,archiveCard}) => {
 
 	const cardDescBox = document.getElementById("card-desc-popup");
 	const cardDescDiv = document.getElementById("card-desc");
+	const cardTitleBox = document.getElementById("card-title");
+	const [cardTitle, setCardTitle] = useState("")
 	const [cardDesc, setCardDesc] = useState("");
 
 	useEffect(() => {
+		setCardTitle(card.title);
 		setCardDesc(card.description);
-	}, [card.description])
+
+	}, [card.description, card.title])
 
 	const archiveOnClick = () => {
 		archiveCard();
@@ -55,18 +62,58 @@ const CardModal = ({listTitle,card,archiveCard,editCardDesc}) => {
 		}
 	}
 
+	const cardTitleBoxDisplay = (open) =>{
+		if(open){
+			cardTitleBox.style.border = "2px solid #0079BF";
+		}
+		else{
+			cardTitleBox.style.border = "0px";
+			cardTitleBox.blur();
+		}
+	}
+
 	const inputEntered = (e, status) => {
-	  	if(e.keyCode === 13 && status === "edit"){
-	    	editCardDesc(cardDesc);
-	    	cardDescBoxClose(true);
-	    	//document.getElementById("card-modal").style.display="none";
+	  	if(e.keyCode === 13 && status === "editTitle"){
+	    	editCardTitle(cardTitle);
+	    	cardTitleBoxDisplay(false);
 	  	}
 	}
 
 	const editOnClick = (e) => {
 		editCardDesc(cardDesc);
 		cardDescBoxClose(true);
-		//document.getElementById("card-modal").style.display="none";
+	}
+
+	const editCardTitle = (title) => {
+		try{
+			Axios.put( url + "card/" + card.id, {
+			   	"title": title,
+				"description": card.description,
+				"due_date": card.due_date,
+				"position": card.position,
+				"status": card.status,
+				"list": card.list
+			})
+		}
+		catch(error){
+			console.log(error);
+		}
+	}
+
+	const editCardDesc = (desc) => {
+		try{
+			Axios.put( url + "card/" + card.id, {
+			   	"title": card.title,
+				"description": desc,
+				"due_date": card.due_date,
+				"position": card.position,
+				"status": card.status,
+				"list": card.list
+			})
+		}
+		catch(error){
+			console.log(error);
+		}
 	}
 
 	return (
@@ -79,7 +126,14 @@ const CardModal = ({listTitle,card,archiveCard,editCardDesc}) => {
 	      				</div>
 	      				<div className="col-md-11 mb-1">
 	      					<span className="close ml-auto" onClick={closeOnClick} >&times;</span>
-	      					<span className="h5 font-weight-bold card-head" id="card-title">{card.title}</span><br />
+	      					<OutsideClickHandler onOutsideClick={() => cardTitleBoxDisplay(false)} >
+						      <input type="text" className="h5 font-weight-bold" id="card-title"
+				          		value={cardTitle || ""}
+				          		onChange={ e => setCardTitle(e.target.value) }
+	      						onClick={() => cardTitleBoxDisplay(true)}
+	      						onKeyUp={ e => inputEntered(e,"editTitle") }
+	      						/>
+						    </OutsideClickHandler>
 	      					<span>in list <u id="list-title">{listTitle}</u></span>
 	      				</div>
       				</div>
@@ -201,7 +255,7 @@ const CardModal = ({listTitle,card,archiveCard,editCardDesc}) => {
           		name="cardDesc"
           		value={cardDesc}
           		onChange={ e => setCardDesc(e.target.value) }
-          		onKeyUp={(e) => inputEntered(e,"edit")} />
+         		/>
 		        <div className="d-flex justify-content-between align-items-center pt-1">
 		          <button onClick={editOnClick} className="btn btn-success">Save</button>
 		          <button className="btn btn-sm my-1 mx-2 p-0 text-danger" onClick = { () => cardDescBoxClose(true) } style = {{ fontSize:'large' }}><i className="fas fa-times"></i></button>

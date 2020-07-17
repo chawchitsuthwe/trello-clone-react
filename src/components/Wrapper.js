@@ -185,21 +185,7 @@ const Wrapper = () => {
 		setLists(lists);
 	}
 
-	const editCardDesc = (desc) => {
-		try{
-			Axios.put( url + "card/" + card.id, {
-			   	"title": card.title,
-				"description": desc,
-				"due_date": card.due_date,
-				"position": card.position,
-				"status": card.status,
-				"list": card.list
-			})
-		}
-		catch(error){
-			console.log(error);
-		}
-	}
+	
 
 	return (
 		<div>
@@ -227,7 +213,7 @@ const Wrapper = () => {
 				archiveList={archiveList} 
 				deleteList={deleteList} />
 
-			<CardModal card={card} listTitle={listTitle} archiveCard={archiveCard} editCardDesc={editCardDesc} />
+			<CardModal card={card} listTitle={listTitle} archiveCard={archiveCard} />
 			<AddNewCard addNewCardClose={addNewCardClose} saveNewCard={saveNewCard} />
 
 		</div>
