@@ -1,34 +1,35 @@
-import React,{useState, useEffect} from 'react';
+import React,{useState, useEffect, useRef} from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
 import './CardModal.css';
 import Account from './Account';
 import Label from './Label';
 import Checklist from './Checklist';
+import AddChecklist from './AddChecklist';
 import {url} from './../utils';
 import Axios from "axios";
 
-const CardModal = ({listTitle,card,archiveCard}) => {
+const CardModal = ({listTitle,card}) => {
 
-	const cardDescBox = document.getElementById("card-desc-popup");
-	const cardDescDiv = document.getElementById("card-desc");
-	const cardTitleBox = document.getElementById("card-title");
-	const checklistHead = document.getElementById("checklist-head");
+	const cardDescBox = useRef(null);
+	const cardDescDiv = useRef(null);
+	const cardTitleBox = useRef(null);
+	const checklistHead = useRef(null);
+	const cardModal = useRef(null);
+	const addChecklistBox = document.getElementById("add-checklist-box");
+
 	const [cardTitle, setCardTitle] = useState("")
 	const [cardDesc, setCardDesc] = useState("");
+	const [cardChecklists , setCardChecklists] = useState([]);
 
 	useEffect(() => {
 		setCardTitle(card.title);
 		setCardDesc(card.description);
+		setCardChecklists(card.checklists);
 
-	}, [card.description, card.title])
-
-	const archiveOnClick = () => {
-		archiveCard();
-		document.getElementById("card-modal").style.display="none";
-	}
+	}, [card.description, card.title, card.checklists])
 
 	const closeOnClick = () => {
-		document.getElementById("card-modal").style.display="none";
+		cardModal.current.style.display="none";
 	}
 
 	const cardDescBoxDisplay = (e, desc) => {
@@ -41,13 +42,13 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 		}
 		const loc = btn.getBoundingClientRect();
 
-		cardDescBox.style.top = loc.top - 10 + "px";
-	    cardDescBox.style.left = loc.left - 10 + "px";
-	    cardDescBox.style.width = loc.width + 17 + "px";
+		cardDescBox.current.style.top = loc.top - 10 + "px";
+	    cardDescBox.current.style.left = loc.left - 10 + "px";
+	    cardDescBox.current.style.width = loc.width + 17 + "px";
 
-	    cardDescDiv.style.display = "none";
-	    if(checklistHead){
-	    	checklistHead.style.marginTop = "240px";
+	    cardDescDiv.current.style.display = "none";
+	    if(checklistHead.current){
+	    	checklistHead.current.style.marginTop = "240px";
 	    }
 
 		cardDescBoxClose(false);
@@ -56,22 +57,41 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 
 	const cardDescBoxClose = (close) => {
 		if(cardDescBox) {
-			cardDescBox.style.display = close ? "none":"block";
-			cardDescDiv.style.display = close ? "block":"none";
-			if(checklistHead){
-				checklistHead.style.marginTop = close ? "0px" : "240px";
+			cardDescBox.current.style.display = close ? "none":"block";
+			cardDescDiv.current.style.display = close ? "block":"none";
+			if(checklistHead.current){
+				checklistHead.current.style.marginTop = close ? "0px" : "240px";
 			}
 		}
 	}
 
 	const cardTitleBoxDisplay = (open) =>{
 		if(open){
-			cardTitleBox.style.border = "2px solid #0079BF";
+			cardTitleBox.current.style.border = "2px solid #0079BF";
 		}
 		else{
-			cardTitleBox.style.border = "0px";
-			cardTitleBox.blur();
+			cardTitleBox.current.style.border = "0px";
+			cardTitleBox.current.blur();
 		}
+	}
+
+	const addChecklistBoxDisplay = (e) => {
+		
+	    let btn = e.target;
+		if(btn.nodeName === "i" || btn.nodeName === "I") {
+		btn = btn.parentNode;
+		}
+		const loc = btn.getBoundingClientRect();
+
+		addChecklistBox.style.top = loc.top + 40 + "px";
+		addChecklistBox.style.left = loc.left + 30 + "px";
+
+		addChecklistBoxClose(false);
+		
+	}
+
+	const addChecklistBoxClose = (close) => {
+		addChecklistBox.style.display = close ? "none":"block";
 	}
 
 	const inputEntered = (e, status) => {
@@ -118,9 +138,34 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 		}
 	}
 
+	const archiveCard = () => {
+		Axios.put(url + "card/" + card.id + "/2");
+		cardModal.current.style.display="none";
+	}
+
+	const addChecklist = (item) => {
+		try{
+			Axios.post( url + "/checklist", {
+				"cardId": card.id,
+				"title": "Checklist",
+			    "item":	item,
+			    "position": 1,
+			    "checked": 0
+			})
+			.then(res => {
+				setCardChecklists(prevChecklists => [...prevChecklists, res.data]);
+			})
+			addChecklistBoxClose(true);
+
+		}
+		catch(error){
+			console.log(error);
+		}
+	}
+
 	return (
 		<div>
-			<div className="customModal" id="card-modal">
+			<div className="customModal" id="card-modal" ref={cardModal}>
 				<div className="custom-modal-content">
 					<div className="row">
 	      				<div className="px-3">
@@ -130,6 +175,7 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 	      					<span className="close ml-auto" onClick={closeOnClick} >&times;</span>
 	      					<OutsideClickHandler onOutsideClick={() => cardTitleBoxDisplay(false)} >
 						      <input type="text" className="h5 font-weight-bold" id="card-title"
+						      	ref={cardTitleBox}
 				          		value={cardTitle || ""}
 				          		onChange={ e => setCardTitle(e.target.value) }
 	      						onClick={() => cardTitleBoxDisplay(true)}
@@ -187,7 +233,7 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 			      			<div className="row">
 			      				<div className="col-md-1"></div>
 		    					<div className="col-md-11">
-		    						<div id="card-desc" onClick={(e) => cardDescBoxDisplay(e,cardDesc)}>
+		    						<div id="card-desc" ref={cardDescDiv} onClick={(e) => cardDescBoxDisplay(e,cardDesc)}>
 		    						{
 		    							cardDesc ? 
 		    							<p> { cardDesc } </p> :
@@ -197,7 +243,7 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 		    					</div>
 			     			</div>
 			     			{ card.checklists && !!card.checklists.length && 
-			     			<div id="checklist-head">
+			     			<div id="checklist-head" ref={checklistHead}>
 			     				<div className="row mb-1">
 			     					<div className="col-md-1">
 			    						<i className="fa fa-check-square"></i>
@@ -209,7 +255,7 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 			     				<div className="row">
 			     					<div className="col-md-1"></div>
 			     					<div className="col-md-11" id="card-checklist">
-			     					{ card.checklists.map(checklist => (
+			     					{ cardChecklists && cardChecklists.map(checklist => (
   
 						        		<Checklist key={checklist.id} checklist={checklist} />
 						    	
@@ -228,7 +274,7 @@ const CardModal = ({listTitle,card,archiveCard}) => {
  		      					<h6>ADD TO CARD</h6>
  		      					<button className="btn btn-card-action w-100"><i className="far fa-user"></i>&nbsp; Members</button>
  		      					<button className="btn btn-card-action w-100"><i className="fas fa-tag"></i>&nbsp; Labels</button>
- 		      					<button className="btn btn-card-action w-100"><i className="far fa-check-square"></i>&nbsp; Checklist</button>
+ 		      					<button className="btn btn-card-action w-100" onClick={addChecklistBoxDisplay}><i className="far fa-check-square"></i>&nbsp; Checklist</button>
  		      					<button className="btn btn-card-action w-100"><i className="far fa-clock"></i>&nbsp; Due Date</button>
  		      					<button className="btn btn-card-action w-100"><i className="fas fa-paperclip"></i>&nbsp; Attachement</button>
  		      					<button className="btn btn-card-action w-100"><i className="far fa-window-maximize"></i>&nbsp; Cover</button>
@@ -246,16 +292,16 @@ const CardModal = ({listTitle,card,archiveCard}) => {
  		      					<button className="btn btn-card-action w-100"><i className="far fa-eye"></i>&nbsp; Watch</button>
  		      				</section>
  		      				<hr/>
- 		      				<button className="btn btn-card-action w-100" onClick={archiveOnClick}><i className="fas fa-archive"></i>&nbsp; Archive</button>
+ 		      				<button className="btn btn-card-action w-100" onClick={archiveCard}><i className="fas fa-archive"></i>&nbsp; Archive</button>
  		      				<button className="btn btn-card-action w-100"><i className="fas fa-share-alt"></i>&nbsp; Share</button>
  		      			</div>
       				</div>
 				</div>
 			</div>
-			<div className="rounded trello-fadein" id="card-desc-popup">
+			<div className="rounded trello-fadein" id="card-desc-popup" ref={cardDescBox}>
 		        <textarea id="desc-input" className="w-100" placeholder="Add a more detailed description..." rows="6"
           		name="cardDesc"
-          		value={cardDesc}
+          		value={cardDesc || ""}
           		onChange={ e => setCardDesc(e.target.value) }
          		/>
 		        <div className="d-flex justify-content-between align-items-center pt-1">
@@ -263,6 +309,7 @@ const CardModal = ({listTitle,card,archiveCard}) => {
 		          <button className="btn btn-sm my-1 mx-2 p-0 text-danger" onClick = { () => cardDescBoxClose(true) } style = {{ fontSize:'large' }}><i className="fas fa-times"></i></button>
 		        </div>
 		    </div>
+		    <AddChecklist addChecklistBoxClose={addChecklistBoxClose} addChecklist={addChecklist} />
 		</div>
 	)
 }

@@ -12,9 +12,9 @@ import {url} from './../utils';
 const Wrapper = () => {
 
 	const [lists, setLists] = useState([]);
+	const [list, setList] = useState({});
 	const [listId, setListId] = useState(1);
 	const [listTitle, setListTItle] = useState("");
-	const [list1, setList1] = useState({});
 	const [card, setCard] = useState({});
 
 	const listActionPopup = document.getElementById("list-action-popup");
@@ -65,12 +65,12 @@ const Wrapper = () => {
 		try {
 	  		Axios.put( url + "list/"+listId, {
 				title: title,
-				position: list1.position,
+				position: list.position,
 				status: 1
 			})
 		} 
 		catch (error) {
-			setList1({});
+			setList({});
 	  		console.log(error);
 		}
 		
@@ -82,7 +82,7 @@ const Wrapper = () => {
 			listActionClose(true);
 		} 
 		catch (error) {
-			setList1({});
+			setList({});
 	  		console.log(error);
 		}
 		
@@ -94,7 +94,7 @@ const Wrapper = () => {
 			listActionClose(true);
 		} 
 		catch (error) {
-	  		setList1({});
+	  		setList({});
 	  		console.log(error);
 		}
 	}
@@ -125,13 +125,13 @@ const Wrapper = () => {
 		try {
 	  		Axios.get(url + "list/" + listId)
 	  		.then( res => {
-	  			setList1(res.data);
+	  			setList(res.data);
 	  		})
 	  		listActionClose(true);
 			document.getElementById("edit-list-modal").style.display="block";
 		} 
 		catch (error) {
-	  		setList1({});
+	  		setList({});
 		}
 	}
 
@@ -180,22 +180,15 @@ const Wrapper = () => {
 		}
 	}
 
-	const archiveCard = () => {
-		Axios.put(url + "card/" + card.id + "/2");
-		setLists(lists);
-	}
-
-	
-
 	return (
 		<div>
 			<div id="wrapper" className="p-2">
 
-			{lists && lists.map((list, index) => (
+			{lists && lists.map((li, index) => (
 	      
-	        	list.status === 1 && 
+	        	li.status === 1 && 
 	        	<List key={index} 
-	        		list={list} 
+	        		list={li} 
 	        		listActionDisplay={listActionDisplay} 
 	        		cardClicked={cardClicked}
 	        		addNewCardDisplay={addNewCardDisplay} />
@@ -207,13 +200,14 @@ const Wrapper = () => {
 			</div>
 
 			<ListAction
+				title={listTitle}
 				listActionClose={listActionClose} 
 				listActionClicked={listActionClicked}
 				editListTitle={editListTitle} 
 				archiveList={archiveList} 
 				deleteList={deleteList} />
 
-			<CardModal card={card} listTitle={listTitle} archiveCard={archiveCard} />
+			<CardModal card={card} listTitle={listTitle} />
 			<AddNewCard addNewCardClose={addNewCardClose} saveNewCard={saveNewCard} />
 
 		</div>

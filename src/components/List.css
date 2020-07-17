@@ -16,3 +16,10 @@
 .list .btn:hover{
 	background-color: rgb(0,0,0,0.1);
 }
+
+#list-title{
+	background-color: transparent;
+	width: 100%;
+	border-radius: 3px;
+	border: 0px;
+}

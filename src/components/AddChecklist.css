@@ -1,0 +1,31 @@
+#add-checklist-box{
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  display: none;
+  width: 300px;
+}
+
+.card{
+	box-shadow: 0 2px 2px -2px rgb(0,0,0,0.2);
+}
+
+.card p{
+	font-size: 16px;
+}
+
+.btn-green{
+	background-color: #519839;
+	color: white;
+}
+
+.btn-green:hover{
+	background-color: #61BD4F;
+}
+
+.checklist-input{
+  padding: 2px;
+  border-radius: 3px;
+  border: 2px solid #0079BF;
+}

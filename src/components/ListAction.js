@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './ListAction.css';
 
 const ListAction = ({listActionClose, listActionClicked, editListTitle, archiveList, deleteList}) => {
 
 	const [listTitle, setListTitle] = useState("");
+	
+	const editListModal = useRef(null);
 
 	const editTitleSubmit = (e) => {		
 		e.preventDefault();
 		editListTitle(listTitle);
-		document.getElementById("edit-list-modal").style.display="none";
+		editListModal.current.style.display="none";
 		setListTitle("");
 	}
 
 	const closeOnClick = () => {
-		document.getElementById("edit-list-modal").style.display="none";
+		editListModal.current.style.display="none";
 	}
 
 	return (
@@ -32,7 +34,7 @@ const ListAction = ({listActionClose, listActionClicked, editListTitle, archiveL
 				</ul>
 			</div>
 
-			<div className="customModal" id="edit-list-modal">
+			<div className="customModal" id="edit-list-modal" ref={editListModal}>
 				<div className="custom-modal-content">
 					<form id="list-edit-form" onSubmit={ editTitleSubmit }>
   						<div className="form-group">

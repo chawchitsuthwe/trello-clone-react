@@ -9,7 +9,7 @@ const Checklist = ({checklist}) => {
 	}
 	return (
 		<div>
-			<label className="cb-container">{checklist.title}
+			<label className="cb-container">{checklist.item}
   				<input type="checkbox" checked={ checked ? "checked": ""} onChange={ checkOnChnage } />
   				<span className="checkmark"></span>
 			</label>
