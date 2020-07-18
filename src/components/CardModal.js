@@ -1,12 +1,14 @@
 import React,{useState, useEffect, useRef} from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
+import {url} from './../utils';
+import Axios from "axios";
 import './CardModal.css';
+
 import Account from './Account';
 import Label from './Label';
 import Checklist from './Checklist';
 import AddChecklist from './AddChecklist';
-import {url} from './../utils';
-import Axios from "axios";
+
 
 const CardModal = ({listTitle,card}) => {
 
@@ -30,6 +32,74 @@ const CardModal = ({listTitle,card}) => {
 
 	const closeOnClick = () => {
 		cardModal.current.style.display="none";
+	}
+
+	const editOnClick = (e) => {
+		editCardDesc(cardDesc);
+		cardDescBoxClose(true);
+	}
+
+	const inputEntered = (e, status) => {
+	  	if(e.keyCode === 13 && status === "editTitle"){
+	    	editCardTitle(cardTitle);
+	    	cardTitleBoxDisplay(false);
+	  	}
+	}
+
+	const editCardTitle = (title) => {
+		try{
+			Axios.put( url + "card/" + card.id, {
+			   	"title": title,
+				"description": card.description,
+				"due_date": card.due_date,
+				"position": card.position,
+				"status": card.status,
+				"list": card.list
+			})
+		}
+		catch(error){
+			console.log(error);
+		}
+	}
+
+	const editCardDesc = (desc) => {
+		try{
+			Axios.put( url + "card/" + card.id, {
+			   	"title": card.title,
+				"description": desc,
+				"due_date": card.due_date,
+				"position": card.position,
+				"status": card.status,
+				"list": card.list
+			})
+		}
+		catch(error){
+			console.log(error);
+		}
+	}
+
+	const archiveCard = () => {
+		Axios.put(url + "card/" + card.id + "/2");
+		cardModal.current.style.display="none";
+	}
+
+	const addChecklist = (item) => {
+		try{
+			Axios.post( url + "/checklist", {
+				"cardId": card.id,
+				"title": "Checklist",
+			    "item":	item,
+			    "position": 1,
+			    "checked": 0
+			})
+			.then(res => {
+				setCardChecklists(prevChecklists => [...prevChecklists, res.data]);
+			})
+			addChecklistBoxClose(true);
+		}
+		catch(error){
+			console.log(error);
+		}
 	}
 
 	const cardDescBoxDisplay = (e, desc) => {
@@ -94,75 +164,6 @@ const CardModal = ({listTitle,card}) => {
 		addChecklistBox.style.display = close ? "none":"block";
 	}
 
-	const inputEntered = (e, status) => {
-	  	if(e.keyCode === 13 && status === "editTitle"){
-	    	editCardTitle(cardTitle);
-	    	cardTitleBoxDisplay(false);
-	  	}
-	}
-
-	const editOnClick = (e) => {
-		editCardDesc(cardDesc);
-		cardDescBoxClose(true);
-	}
-
-	const editCardTitle = (title) => {
-		try{
-			Axios.put( url + "card/" + card.id, {
-			   	"title": title,
-				"description": card.description,
-				"due_date": card.due_date,
-				"position": card.position,
-				"status": card.status,
-				"list": card.list
-			})
-		}
-		catch(error){
-			console.log(error);
-		}
-	}
-
-	const editCardDesc = (desc) => {
-		try{
-			Axios.put( url + "card/" + card.id, {
-			   	"title": card.title,
-				"description": desc,
-				"due_date": card.due_date,
-				"position": card.position,
-				"status": card.status,
-				"list": card.list
-			})
-		}
-		catch(error){
-			console.log(error);
-		}
-	}
-
-	const archiveCard = () => {
-		Axios.put(url + "card/" + card.id + "/2");
-		cardModal.current.style.display="none";
-	}
-
-	const addChecklist = (item) => {
-		try{
-			Axios.post( url + "/checklist", {
-				"cardId": card.id,
-				"title": "Checklist",
-			    "item":	item,
-			    "position": 1,
-			    "checked": 0
-			})
-			.then(res => {
-				setCardChecklists(prevChecklists => [...prevChecklists, res.data]);
-			})
-			addChecklistBoxClose(true);
-
-		}
-		catch(error){
-			console.log(error);
-		}
-	}
-
 	return (
 		<div>
 			<div className="customModal" id="card-modal" ref={cardModal}>
@@ -172,7 +173,7 @@ const CardModal = ({listTitle,card}) => {
 	      					<i className="fa fa-window-maximize"></i>
 	      				</div>
 	      				<div className="col-md-11 mb-1">
-	      					<span className="close ml-auto" onClick={closeOnClick} >&times;</span>
+	      					<span onClick={closeOnClick} className="close ml-auto">&times;</span>
 	      					<OutsideClickHandler onOutsideClick={() => cardTitleBoxDisplay(false)} >
 						      <input type="text" className="h5 font-weight-bold" id="card-title"
 						      	ref={cardTitleBox}
@@ -233,7 +234,7 @@ const CardModal = ({listTitle,card}) => {
 			      			<div className="row">
 			      				<div className="col-md-1"></div>
 		    					<div className="col-md-11">
-		    						<div id="card-desc" ref={cardDescDiv} onClick={(e) => cardDescBoxDisplay(e,cardDesc)}>
+		    						<div onClick={(e) => cardDescBoxDisplay(e,cardDesc)} id="card-desc" ref={cardDescDiv}>
 		    						{
 		    							cardDesc ? 
 		    							<p> { cardDesc } </p> :
@@ -242,7 +243,7 @@ const CardModal = ({listTitle,card}) => {
 		    						</div>
 		    					</div>
 			     			</div>
-			     			{ card.checklists && !!card.checklists.length && 
+			     			{ cardChecklists && !!cardChecklists.length && 
 			     			<div id="checklist-head" ref={checklistHead}>
 			     				<div className="row mb-1">
 			     					<div className="col-md-1">
@@ -255,7 +256,7 @@ const CardModal = ({listTitle,card}) => {
 			     				<div className="row">
 			     					<div className="col-md-1"></div>
 			     					<div className="col-md-11" id="card-checklist">
-			     					{ cardChecklists && cardChecklists.map(checklist => (
+			     					{ cardChecklists.map(checklist => (
   
 						        		<Checklist key={checklist.id} checklist={checklist} />
 						    	
@@ -274,7 +275,7 @@ const CardModal = ({listTitle,card}) => {
  		      					<h6>ADD TO CARD</h6>
  		      					<button className="btn btn-card-action w-100"><i className="far fa-user"></i>&nbsp; Members</button>
  		      					<button className="btn btn-card-action w-100"><i className="fas fa-tag"></i>&nbsp; Labels</button>
- 		      					<button className="btn btn-card-action w-100" onClick={addChecklistBoxDisplay}><i className="far fa-check-square"></i>&nbsp; Checklist</button>
+ 		      					<button onClick={addChecklistBoxDisplay} className="btn btn-card-action w-100"><i className="far fa-check-square"></i>&nbsp; Checklist</button>
  		      					<button className="btn btn-card-action w-100"><i className="far fa-clock"></i>&nbsp; Due Date</button>
  		      					<button className="btn btn-card-action w-100"><i className="fas fa-paperclip"></i>&nbsp; Attachement</button>
  		      					<button className="btn btn-card-action w-100"><i className="far fa-window-maximize"></i>&nbsp; Cover</button>
@@ -292,7 +293,7 @@ const CardModal = ({listTitle,card}) => {
  		      					<button className="btn btn-card-action w-100"><i className="far fa-eye"></i>&nbsp; Watch</button>
  		      				</section>
  		      				<hr/>
- 		      				<button className="btn btn-card-action w-100" onClick={archiveCard}><i className="fas fa-archive"></i>&nbsp; Archive</button>
+ 		      				<button onClick={archiveCard} className="btn btn-card-action w-100"><i className="fas fa-archive"></i>&nbsp; Archive</button>
  		      				<button className="btn btn-card-action w-100"><i className="fas fa-share-alt"></i>&nbsp; Share</button>
  		      			</div>
       				</div>
@@ -306,7 +307,7 @@ const CardModal = ({listTitle,card}) => {
          		/>
 		        <div className="d-flex justify-content-between align-items-center pt-1">
 		          <button onClick={editOnClick} className="btn btn-success">Save</button>
-		          <button className="btn btn-sm my-1 mx-2 p-0 text-danger" onClick = { () => cardDescBoxClose(true) } style = {{ fontSize:'large' }}><i className="fas fa-times"></i></button>
+		          <button onClick = { () => cardDescBoxClose(true) } className="btn btn-sm my-1 mx-2 p-0 text-danger" style = {{ fontSize:'large' }}><i className="fas fa-times"></i></button>
 		        </div>
 		    </div>
 		    <AddChecklist addChecklistBoxClose={addChecklistBoxClose} addChecklist={addChecklist} />

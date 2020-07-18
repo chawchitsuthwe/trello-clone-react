@@ -1,9 +1,14 @@
 import React, {useState} from 'react';
-import './AddChecklist.css'
+import './AddChecklist.css';
 
 const AddChecklist = ({addChecklistBoxClose, addChecklist}) => {
 
 	const [item, setItem] = useState("");
+
+	const addChecklistOnClick = () => {
+		addChecklist(item);
+		setItem("");
+	}
 
 	return (
 		<div>
@@ -19,8 +24,10 @@ const AddChecklist = ({addChecklistBoxClose, addChecklist}) => {
 					onChange= { e => setItem(e.target.value) } 
 					/>
 			        <div className="d-flex justify-content-between align-items-center pt-1">
-			          <button onClick={() => addChecklist(item)} className="btn btn-success">Add</button>
-			          <button className="btn btn-sm my-1 mx-2 p-0 text-danger" onClick = { () => addChecklistBoxClose(true) } style = {{ fontSize:'large' }}><i className="fas fa-times"></i></button>
+						<button onClick={addChecklistOnClick} className="btn btn-success">Add</button>
+						<button onClick = { () => addChecklistBoxClose(true) } className="btn btn-sm my-1 mx-2 p-0 text-danger" style = {{ fontSize:'large' }}>
+							<i className="fas fa-times"></i>
+						</button>
 			        </div>
 				</ul>
 			</div>
@@ -28,4 +35,4 @@ const AddChecklist = ({addChecklistBoxClose, addChecklist}) => {
 	)
 }
 
-export default AddChecklist
+export default AddChecklist;

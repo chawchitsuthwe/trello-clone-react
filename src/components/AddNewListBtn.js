@@ -37,15 +37,21 @@ const AddNewListBtn = ({saveNewList}) => {
 
 	return (
 		<div>
-			<button id="add-list-btn" className="btn btn-sm btn-new-list text-left mr-2" onClick = { e => addNewListDisplay(e) }>
+			<button onClick = { e => addNewListDisplay(e) } id="add-list-btn" className="btn btn-sm btn-new-list text-left mr-2">
 		        <i className="fa fa-plus"></i>&nbsp;&nbsp;Add another list
 			</button>
 
 		  	<div className="rounded trello-fadein p-1" id="add-list-popup">
-		        <input type="text" className="w-100" id="list-title-input" value={listTitle} onChange= { e => setListTitle(e.target.value) } onKeyUp = { e => inputEntered(e,'add') } />
+		        <input type="text" className="w-100" id="list-title-input" 
+		        value={listTitle} 
+		        onChange= { e => setListTitle(e.target.value) } 
+		        onKeyUp = { e => inputEntered(e,'add') } 
+		        />
 		        <div className="d-flex justify-content-between align-items-center pt-1">
-		          <button className="btn btn-success" onClick= {addOnClick} >Add</button>
-		          <button className="btn btn-sm my-1 mx-2 p-0 text-danger" onClick = { addNewListClose } style = {{ fontSize:'large' }}><i className="fas fa-times"></i></button>
+					<button onClick= {addOnClick} className="btn btn-success">Add</button>
+					<button onClick = { addNewListClose } className="btn btn-sm my-1 mx-2 p-0 text-danger" style = {{ fontSize:'large' }}>
+		          		<i className="fas fa-times"></i>
+		          	</button>
 		        </div>
 		    </div>
 	  	</div>

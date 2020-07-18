@@ -24,8 +24,10 @@ const ListAction = ({listActionClose, listActionClicked, editListTitle, archiveL
 				<ul className="list-group list-group-flush">
 			  		<li className="list-group-item text-secondary">
 			            <div className="d-flex justify-content-between align-items-center">
-			              <p style= {{ fontSize: "18px" }} >List Actions</p>
-			              <button className="btn btn-sm my-1 mx-2 p-0 text-danger" onClick = { () => listActionClose(true) } style = {{ fontSize:'medium' }}><i className="fas fa-times"></i></button>
+			              	<p style= {{ fontSize: "18px" }} >List Actions</p>
+			              	<button onClick = { () => listActionClose(true) } className="btn btn-sm my-1 mx-2 p-0 text-danger" style = {{ fontSize:'medium' }}>
+			              		<i className="fas fa-times"></i>
+			              	</button>
 			            </div>
 			  		</li>
 					<button onClick={ listActionClicked } className="list-group-item list-group-item-action" id="edit-list-btn">Edit</button>
@@ -38,10 +40,13 @@ const ListAction = ({listActionClose, listActionClicked, editListTitle, archiveL
 				<div className="custom-modal-content">
 					<form id="list-edit-form" onSubmit={ editTitleSubmit }>
   						<div className="form-group">
-    						<input type="text" className="form-control" placeholder="Enter list title" value={listTitle} onChange= { e => setListTitle(e.target.value) } id="editText" />
+    						<input type="text" className="form-control" placeholder="Enter list title" id="editText"  
+    						value={listTitle} 
+    						onChange= { e => setListTitle(e.target.value) }
+    						/>
   						</div>
   						<button type="submit" className="btn btn-green">Edit</button>
-  						 <span className="close" onClick={closeOnClick} >&times;</span>
+  						 <span onClick={closeOnClick} className="close" >&times;</span>
   					</form>
 				</div>
 			</div>

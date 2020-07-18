@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import "./Wrapper.css";
 import Axios from "axios";
+import {url} from './../utils';
+import "./Wrapper.css";
 
 import List from './List';
 import AddNewListBtn from './AddNewListBtn';
-import AddNewCard from './AddNewCard'
 import ListAction from './ListAction';
 import CardModal from './CardModal';
-import {url} from './../utils';
+import AddNewCard from './AddNewCard'
+
 
 const Wrapper = () => {
 
@@ -33,21 +34,6 @@ const Wrapper = () => {
 	useEffect(() => {
 		fetchLists();
 	}, [lists]);
-
-	const cardClicked = (listTitle,cardId) => {
-		try {
-	  		Axios.get(url + "card/" + cardId)
-	  		.then( res => {
-	  			setCard(res.data);
-	  			setListTItle(listTitle);
-	  		})
-	  		document.getElementById("card-modal").style.display="block";
-		} 
-		catch (error) {
-	  		setCard({});
-	  		setListTItle("");
-		}
-	}
 
 	const saveNewList = (listTitle) => {
 
@@ -157,6 +143,21 @@ const Wrapper = () => {
 		}
 	}
 
+	const cardClicked = (listTitle,cardId) => {
+		try {
+	  		Axios.get(url + "card/" + cardId)
+	  		.then( res => {
+	  			setCard(res.data);
+	  			setListTItle(listTitle);
+	  		})
+	  		document.getElementById("card-modal").style.display="block";
+		} 
+		catch (error) {
+	  		setCard({});
+	  		setListTItle("");
+		}
+	}
+	
 	const saveNewCard = async(cardTitle) => {
 
 		try {
@@ -208,6 +209,7 @@ const Wrapper = () => {
 				deleteList={deleteList} />
 
 			<CardModal card={card} listTitle={listTitle} />
+
 			<AddNewCard addNewCardClose={addNewCardClose} saveNewCard={saveNewCard} />
 
 		</div>

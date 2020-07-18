@@ -9,9 +9,7 @@ const List = ({list, listActionDisplay, cardClicked, addNewCardDisplay}) => {
 			<div className="list">
 				<div className="d-flex justify-content-between align-items-center mb-1">
 	  				<h6 className="pl-2 font-weight-bold">{list.title}</h6>
-	  				<button id="list-action-btn" 
-	  					className="btn btn-sm" 
-	  					onClick={ (e)=> listActionDisplay(e, list.id) }>
+	  				<button onClick={ (e)=> listActionDisplay(e, list.id) } id="list-action-btn" className="btn btn-sm">
 	  					<i className="fa fa-ellipsis-h"></i>
 	  				</button>
 				</div>
@@ -26,7 +24,7 @@ const List = ({list, listActionDisplay, cardClicked, addNewCardDisplay}) => {
 	    	
 	    		))}
 	    		<div className="d-flex justify-content-between align-items-center mt-2">
-	  				<button className="btn btn-sm btn-new-card text-left w-100" id="add-card-btn" onClick={(e) => addNewCardDisplay(e, list.id)}>
+	  				<button onClick={(e) => addNewCardDisplay(e, list.id)} className="btn btn-sm btn-new-card text-left w-100" id="add-card-btn">
 	    				<i className="fa fa-plus"></i>&nbsp;&nbsp;Add another card
 	  				</button>
 	  				<button className="btn btn-sm"><i className="fa fa-window-restore"></i></button>
